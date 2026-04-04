@@ -849,10 +849,5 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// iOS double-tap prevention
-document.querySelectorAll('button').forEach(b => {
-  b.addEventListener('touchend', e => e.preventDefault());
-});
-
 // ── Boot ──────────────────────────────────────────────────────
 updateHomeScreen();

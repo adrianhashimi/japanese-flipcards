@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>日本語 Flash Cards</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HOME SCREEN
+═══════════════════════════════════════════════════════════ -->
+<div id="screen-home" class="screen active">
+
+  <div class="home-hero">
+    <!-- Level badge -->
+    <div class="level-badge">
+      <span id="home-level-name" class="level-name">見習い</span>
+      <span id="home-level-en"   class="level-en">Apprentice</span>
+      <div class="xp-track"><div id="home-xp-bar" class="xp-bar"></div></div>
+      <span id="home-xp-label"   class="xp-label">0 XP</span>
+    </div>
+
+    <h1 class="home-title">日本語</h1>
+    <span class="home-ruby">Japanese Flash Cards</span>
+
+    <!-- Streak + daily goal -->
+    <div class="home-meta-row">
+      <div id="streak-badge" class="streak-badge">🔥 <span id="streak-num">0</span></div>
+      <div class="daily-wrap">
+        <div class="daily-track"><div id="daily-bar" class="daily-bar"></div></div>
+        <span id="daily-label" class="daily-label">0 / 20 today</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game options -->
+  <div class="options-panel">
+    <div class="opt-row">
+      <span class="opt-label">Answer</span>
+      <div class="opt-group" id="opt-answerType">
+        <button class="opt-btn active" data-opt="answerType" data-val="type">Type</button>
+        <button class="opt-btn"        data-opt="answerType" data-val="choice">Choice</button>
+        <button class="opt-btn"        data-opt="answerType" data-val="reverse">Reverse</button>
+      </div>
+    </div>
+    <div class="opt-row">
+      <span class="opt-label">Lives</span>
+      <div class="opt-group" id="opt-livesOn">
+        <button class="opt-btn active" data-opt="livesOn" data-val="true">On ❤️</button>
+        <button class="opt-btn"        data-opt="livesOn" data-val="false">Off</button>
+      </div>
+    </div>
+    <div class="opt-row">
+      <span class="opt-label">Hints</span>
+      <div class="opt-group" id="opt-hintsOn">
+        <button class="opt-btn active" data-opt="hintsOn" data-val="true">On 💡</button>
+        <button class="opt-btn"        data-opt="hintsOn" data-val="false">Off</button>
+      </div>
+    </div>
+    <div class="opt-row">
+      <span class="opt-label">Sound</span>
+      <div class="opt-group" id="opt-soundOn">
+        <button class="opt-btn active" data-opt="soundOn" data-val="true">On 🔊</button>
+        <button class="opt-btn"        data-opt="soundOn" data-val="false">Off</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mode buttons -->
+  <nav class="home-menu">
+    <div>
+      <p class="section-label">Hiragana</p>
+      <button class="mode-btn" data-mode="hiragana-alpha">
+        <span class="mode-glyph">あ</span>
+        <span class="mode-info"><span class="mode-name">Alphabet</span><span class="mode-sub">Type the correct romaji</span></span>
+        <span class="mode-chevron">›</span>
+      </button>
+      <button class="mode-btn" data-mode="hiragana-word">
+        <span class="mode-glyph">言</span>
+        <span class="mode-info"><span class="mode-name">Words</span><span class="mode-sub">7-second time limit</span></span>
+        <span class="mode-chevron">›</span>
+      </button>
+    </div>
+    <div>
+      <p class="section-label">Katakana</p>
+      <button class="mode-btn" data-mode="katakana-alpha">
+        <span class="mode-glyph">ア</span>
+        <span class="mode-info"><span class="mode-name">Alphabet</span><span class="mode-sub">Type the correct romaji</span></span>
+        <span class="mode-chevron">›</span>
+      </button>
+      <button class="mode-btn" data-mode="katakana-word">
+        <span class="mode-glyph">語</span>
+        <span class="mode-info"><span class="mode-name">Words</span><span class="mode-sub">7-second time limit</span></span>
+        <span class="mode-chevron">›</span>
+      </button>
+    </div>
+    <div>
+      <p class="section-label">Mixed</p>
+      <button class="mode-btn" data-mode="mixed-alpha">
+        <span class="mode-glyph" style="font-size:20px">あア</span>
+        <span class="mode-info"><span class="mode-name">Alphabet Mix</span><span class="mode-sub">Hiragana + Katakana combined</span></span>
+        <span class="mode-chevron">›</span>
+      </button>
+      <button class="mode-btn" data-mode="mixed-word">
+        <span class="mode-glyph">混</span>
+        <span class="mode-info"><span class="mode-name">Words Mix</span><span class="mode-sub">All words · 7-second limit</span></span>
+        <span class="mode-chevron">›</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Bottom nav -->
+  <div class="home-bottom-nav">
+    <button id="btn-chart" class="bottom-nav-btn">📖 Chart</button>
+    <button id="btn-stats" class="bottom-nav-btn">📊 Progress</button>
+  </div>
+
+</div><!-- /screen-home -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     GAME SCREEN
+═══════════════════════════════════════════════════════════ -->
+<div id="screen-game" class="screen">
+
+  <header class="game-header">
+    <button id="btn-back" class="btn-back">‹</button>
+    <div class="game-header-center">
+      <span id="mode-label" class="mode-label"></span>
+      <div id="combo-badge" class="combo-badge hidden">🔥 ×<span id="combo-num">2</span></div>
+    </div>
+    <div id="lives-display" class="lives-display"></div>
+  </header>
+
+  <div class="progress-track">
+    <div id="progress-bar" class="progress-fill"></div>
+  </div>
+
+  <div id="timer-wrap" class="timer-wrap hidden">
+    <div class="timer-track"><div id="timer-bar" class="timer-bar"></div></div>
+    <span id="timer-text" class="timer-text">7s</span>
+  </div>
+
+  <div class="game-subheader">
+    <div class="hud-stats">
+      <span id="stat-correct" class="stat s-correct">✓ 0</span>
+      <span id="stat-wrong"   class="stat s-wrong">✗ 0</span>
+    </div>
+    <p id="progress-text" class="progress-caption">0 / 0 mastered</p>
+    <span id="session-xp" class="session-xp">✨ 0 XP</span>
+  </div>
+
+  <main class="game-body">
+
+    <!-- Card -->
+    <div class="card-stage">
+      <div id="card" class="card">
+        <div class="card-face card-front">
+          <span id="card-script" class="card-script-badge hidden"></span>
+          <div id="card-emoji"   class="card-emoji hidden"></div>
+          <div id="card-char"    class="card-char"></div>
+          <div id="card-hint"    class="card-hint hidden"></div>
+          <div id="hint-reveal"  class="hint-reveal hidden"></div>
+        </div>
+        <div class="card-face card-back">
+          <div id="card-answer"   class="card-answer"></div>
+          <div id="card-meaning"  class="card-meaning-back"></div>
+          <div id="card-sentence" class="card-sentence hidden"></div>
+          <div id="card-icon"     class="card-icon"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Speak + Hint buttons -->
+    <div class="action-row">
+      <button id="btn-speak" class="btn-speak">
+        <span class="speak-icon">🔊</span><span>Pronounce</span>
+      </button>
+      <button id="btn-hint" class="btn-hint hidden">💡 Hint <span class="hint-cost">−25% XP</span></button>
+    </div>
+
+    <!-- Type input -->
+    <div id="input-section" class="input-section hidden">
+      <input id="romaji-input" class="romaji-input" type="text"
+        placeholder="Type romaji…" autocomplete="off" autocorrect="off"
+        autocapitalize="none" spellcheck="false" enterkeyhint="go">
+      <button id="btn-submit" class="btn-submit">Check</button>
+    </div>
+
+    <!-- Multiple choice grid -->
+    <div id="choice-section" class="choice-section hidden">
+      <div class="choice-grid" id="choice-grid"></div>
+    </div>
+
+    <!-- Feedback + Next -->
+    <div id="next-section" class="next-section hidden">
+      <div id="feedback-text" class="feedback-text"></div>
+      <div class="xp-earned-row">
+        <span id="xp-earned-label" class="xp-earned-label hidden"></span>
+      </div>
+      <button id="btn-next" class="btn-next">Next →</button>
+    </div>
+
+  </main>
+</div><!-- /screen-game -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     RESULTS SCREEN
+═══════════════════════════════════════════════════════════ -->
+<div id="screen-results" class="screen">
+  <div class="results-scroll">
+    <div class="results-card">
+
+      <h2 class="results-title">Results</h2>
+
+      <div class="results-score-row">
+        <span id="res-score" class="res-score">0</span>
+        <span class="res-score-denom">/ <span id="res-total">0</span></span>
+      </div>
+
+      <div id="res-grade" class="res-grade grade-d">D</div>
+
+      <!-- XP gained this session -->
+      <div id="res-xp-row" class="res-xp-row">
+        <span id="res-xp-gained" class="res-xp-gained">+0 XP</span>
+        <span id="res-level-up"  class="res-level-up hidden">Level Up! 🎉</span>
+      </div>
+
+      <div class="breakdown">
+        <div class="breakdown-item">
+          <span id="res-correct" class="bd-value bd-correct">0</span>
+          <span class="bd-label">Correct</span>
+        </div>
+        <div class="breakdown-item">
+          <span id="res-wrong"   class="bd-value bd-wrong">0</span>
+          <span class="bd-label">Wrong</span>
+        </div>
+        <div class="breakdown-item">
+          <span id="res-skipped" class="bd-value bd-skip">0</span>
+          <span class="bd-label">Skipped</span>
+        </div>
+      </div>
+
+      <div id="missed-section" class="missed-section hidden">
+        <p class="missed-title">Review Missed</p>
+        <div id="missed-list" class="missed-list"></div>
+      </div>
+
+      <div class="results-actions">
+        <button id="btn-play-again"    class="btn-primary">Play Again</button>
+        <button id="btn-retry-missed"  class="btn-secondary-accent hidden">Retry Missed (<span id="retry-count">0</span>)</button>
+        <button id="btn-view-stats"    class="btn-secondary-accent">View Progress</button>
+        <button id="btn-home"          class="btn-secondary">Home</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /screen-results -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PROGRESS / STATS SCREEN
+═══════════════════════════════════════════════════════════ -->
+<div id="screen-stats" class="screen">
+  <header class="stats-header">
+    <button id="btn-stats-back"  class="btn-back">‹</button>
+    <h2 class="stats-title">Progress</h2>
+    <button id="btn-clear-stats" class="btn-clear">Clear</button>
+  </header>
+
+  <div class="stats-scroll">
+    <div class="stats-summary">
+      <div class="summary-card"><span id="st-sessions"  class="summary-val">0</span><span class="summary-lbl">Games</span></div>
+      <div class="summary-card"><span id="st-questions" class="summary-val">0</span><span class="summary-lbl">Questions</span></div>
+      <div class="summary-card"><span id="st-accuracy"  class="summary-val">—</span><span class="summary-lbl">Accuracy</span></div>
+    </div>
+
+    <section class="stats-section">
+      <h3 class="stats-section-title">Weekly Progress</h3>
+      <div id="weekly-chart" class="weekly-chart"></div>
+    </section>
+
+    <section class="stats-section">
+      <h3 class="stats-section-title">By Mode</h3>
+      <div id="mode-chart" class="mode-chart"></div>
+    </section>
+
+    <div id="stats-empty" class="stats-empty hidden">
+      <span class="stats-empty-icon">📊</span>
+      <p>No games played yet.<br>Complete a game to see your progress!</p>
+    </div>
+  </div>
+</div><!-- /screen-stats -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     REFERENCE CHART SCREEN
+═══════════════════════════════════════════════════════════ -->
+<div id="screen-chart" class="screen">
+  <header class="stats-header">
+    <button id="btn-chart-back" class="btn-back">‹</button>
+    <h2 class="stats-title">Reference Chart</h2>
+    <span></span>
+  </header>
+
+  <div class="chart-tabs">
+    <button class="chart-tab active" data-script="hiragana">Hiragana</button>
+    <button class="chart-tab"        data-script="katakana">Katakana</button>
+  </div>
+
+  <div id="ref-chart-scroll" class="ref-chart-scroll">
+    <div id="ref-chart-grid" class="ref-chart-grid"></div>
+  </div>
+</div><!-- /screen-chart -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     LEVEL-UP OVERLAY
+═══════════════════════════════════════════════════════════ -->
+<div id="levelup-overlay" class="levelup-overlay hidden">
+  <div class="levelup-box">
+    <div class="levelup-icon">🎉</div>
+    <div class="levelup-text">Level Up!</div>
+    <div id="levelup-name" class="levelup-name"></div>
+    <div id="levelup-en"   class="levelup-en"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="sounds.js"></script>
+<script src="progress.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

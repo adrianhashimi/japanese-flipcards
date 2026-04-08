@@ -143,6 +143,7 @@
   </div>
 
   <div id="timer-wrap" class="timer-wrap hidden">
+    <button id="btn-pause" class="btn-pause" aria-label="Pause">⏸</button>
     <div class="timer-track"><div id="timer-bar" class="timer-bar"></div></div>
     <span id="timer-text" class="timer-text">7s</span>
   </div>
@@ -330,6 +331,20 @@
     <div class="levelup-text">Level Up!</div>
     <div id="levelup-name" class="levelup-name"></div>
     <div id="levelup-en"   class="levelup-en"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     LEVEL SELECT OVERLAY
+═══════════════════════════════════════════════════════════ -->
+<div id="level-select-overlay" class="level-select-overlay hidden">
+  <div class="level-select-backdrop" id="level-select-backdrop"></div>
+  <div class="level-select-panel">
+    <div class="level-select-header">
+      <span id="level-select-title" class="level-select-title">Choose Level</span>
+      <button id="level-select-close" class="level-select-close">✕</button>
+    </div>
+    <div id="level-select-list" class="level-select-list"></div>
   </div>
 </div>
 

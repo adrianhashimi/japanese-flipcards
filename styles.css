@@ -125,6 +125,13 @@ body {
 .timer-track { flex: 1; height: 7px; background: #e8e8e8; border-radius: 4px; overflow: hidden; }
 .timer-bar   { height: 100%; width: 100%; background: var(--correct); border-radius: 4px; transition: background-color .4s; }
 .timer-text  { font-size: 13px; font-weight: 700; color: var(--dark); width: 26px; text-align: right; flex-shrink: 0; }
+.btn-pause {
+  width: 30px; height: 30px; flex-shrink: 0; border: none; border-radius: 50%;
+  background: rgba(0,0,0,.08); color: var(--dark); font-size: 14px;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: background .15s, transform .1s;
+}
+.btn-pause:active { background: rgba(0,0,0,.15); transform: scale(.9); }
 
 .game-subheader {
   display: flex; align-items: center; justify-content: space-between;
@@ -371,3 +378,43 @@ body {
   .game-body { padding: 14px 22px 18px; }
   .choice-btn { font-size: 26px; }
 }
+
+/* ============================================================  LEVEL SELECT  */
+.level-select-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: flex-end;
+}
+.level-select-overlay.hidden { display: none !important; }
+.level-select-backdrop {
+  position: absolute; inset: 0; background: rgba(0,0,0,.45);
+}
+.level-select-panel {
+  position: relative; width: 100%; max-width: 480px; margin: 0 auto;
+  background: var(--card-bg); border-radius: var(--r) var(--r) 0 0;
+  padding: 16px 16px 32px; max-height: 80vh; display: flex; flex-direction: column;
+  box-shadow: 0 -8px 40px rgba(0,0,0,.2);
+  animation: slide-up .25s cubic-bezier(.4,0,.2,1);
+}
+@keyframes slide-up { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.level-select-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+}
+.level-select-title { font-size: 15px; font-weight: 800; color: var(--dark); letter-spacing: .5px; }
+.level-select-close {
+  width: 30px; height: 30px; border: none; border-radius: 50%; background: var(--bg);
+  color: var(--muted); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.level-select-list {
+  overflow-y: auto; display: flex; flex-direction: column; gap: 7px;
+}
+.level-select-btn {
+  width: 100%; padding: 13px 16px; text-align: left;
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: var(--r-sm); font-size: 15px; font-weight: 600; color: var(--dark);
+  cursor: pointer; transition: all .15s;
+}
+.level-select-btn:active { background: var(--border); transform: scale(.98); }
+.level-select-btn--full {
+  background: var(--dark); color: #fff; border-color: var(--dark);
+}
+.level-select-btn--full:active { background: var(--dark2); }

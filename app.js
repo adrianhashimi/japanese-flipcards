@@ -91,6 +91,14 @@ const el = {
   // overlay
   levelupOverlay:$('levelup-overlay'),
   levelupName:$('levelup-name'), levelupEn:$('levelup-en'),
+  // pause
+  btnPause:$('btn-pause'),
+  // level select
+  levelSelectOverlay:$('level-select-overlay'),
+  levelSelectBackdrop:$('level-select-backdrop'),
+  levelSelectTitle:$('level-select-title'),
+  levelSelectClose:$('level-select-close'),
+  levelSelectList:$('level-select-list'),
 };
 
 // ── Helpers ──────────────────────────────────────────────────
@@ -154,16 +162,23 @@ function timerTick() {
   if (timeLeft <= 1.5 && timeLeft > 1.45) sfx('tick');
   if (timeLeft <= 0) { stopTimer(); handleTimeout(); }
 }
+function updatePauseBtn() {
+  if (!el.btnPause) return;
+  el.btnPause.textContent = isPaused ? '▶' : '⏸';
+  el.btnPause.setAttribute('aria-label', isPaused ? 'Resume' : 'Pause');
+}
 function startTimer() {
   stopTimer();
   timeLeft  = TIMER_DUR;
   isPaused  = false;
   updateTimerDisplay();
+  updatePauseBtn();
   timerId = setInterval(timerTick, 50);
 }
 function stopTimer() {
   if (timerId) { clearInterval(timerId); timerId = null; }
   isPaused = false;
+  updatePauseBtn();
 }
 function pauseTimer() {
   if (!timerId || isPaused) return;
@@ -171,10 +186,12 @@ function pauseTimer() {
   timerId  = null;
   isPaused = true;
   el.timerText.textContent = '⏸';
+  updatePauseBtn();
 }
 function resumeTimer() {
   if (!isPaused) return;
   isPaused = false;
+  updatePauseBtn();
   timerId  = setInterval(timerTick, 50);
 }
 function updateTimerDisplay() {
@@ -270,7 +287,7 @@ function updateHomeScreen() {
 }
 
 // ── Game init ─────────────────────────────────────────────────
-function startGame(gameMode, reviewCards) {
+function startGame(gameMode, reviewCards, levelLabel) {
   mode       = gameMode;
   isReviewMode = !!reviewCards;
 
@@ -289,7 +306,7 @@ function startGame(gameMode, reviewCards) {
   sessionXP = 0;
   isPaused  = false;
 
-  el.modeLabel.textContent = config.label + (isReviewMode ? ' · Review' : '');
+  el.modeLabel.textContent = config.label + (levelLabel ? ` · ${levelLabel}` : isReviewMode ? ' · Review' : '');
   showScreen('game');
   loadCard();
 }
@@ -764,10 +781,53 @@ function renderRefChart(script) {
   });
 }
 
+// ── Level select ──────────────────────────────────────────────
+let pendingAlphaMode = null;
+
+function showLevelSelect(gameMode) {
+  pendingAlphaMode = gameMode;
+  const isHiragana = gameMode === 'hiragana-alpha';
+  const levels     = isHiragana ? ALPHA_LEVELS.hiragana : ALPHA_LEVELS.katakana;
+  const scriptName = isHiragana ? 'Hiragana' : 'Katakana';
+
+  el.levelSelectTitle.textContent = scriptName + ' — Choose Level';
+  el.levelSelectList.innerHTML = levels.map((lv, i) =>
+    `<button class="level-select-btn${lv.chars === null ? ' level-select-btn--full' : ''}" data-idx="${i}">${lv.label}</button>`
+  ).join('');
+
+  el.levelSelectList.querySelectorAll('.level-select-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lv = levels[+btn.dataset.idx];
+      hideLevelSelect();
+      if (!lv.chars) {
+        startGame(gameMode);
+      } else {
+        const pool  = isHiragana ? HIRAGANA : KATAKANA;
+        const cards = pool.filter(c => lv.chars.includes(c.char));
+        startGame(gameMode, cards, lv.label);
+      }
+    });
+  });
+
+  el.levelSelectOverlay.classList.remove('hidden');
+}
+
+function hideLevelSelect() {
+  el.levelSelectOverlay.classList.add('hidden');
+  pendingAlphaMode = null;
+}
+
 // ── Event listeners ───────────────────────────────────────────
 // Home — mode buttons
 document.querySelectorAll('.mode-btn').forEach(btn => {
-  btn.addEventListener('click', () => startGame(btn.dataset.mode));
+  btn.addEventListener('click', () => {
+    const m = btn.dataset.mode;
+    if (m === 'hiragana-alpha' || m === 'katakana-alpha') {
+      showLevelSelect(m);
+    } else {
+      startGame(m);
+    }
+  });
 });
 
 // Home — option toggles
@@ -793,7 +853,10 @@ el.btnBack.addEventListener('click', () => {
 });
 el.btnSpeak.addEventListener('click',  () => speak(spokenText));
 el.btnHint.addEventListener('click',   showHint);
+el.btnPause.addEventListener('click',  () => { isPaused ? resumeTimer() : pauseTimer(); });
 el.btnSubmit.addEventListener('click', checkTypeAnswer);
+el.levelSelectClose.addEventListener('click', hideLevelSelect);
+el.levelSelectBackdrop.addEventListener('click', hideLevelSelect);
 el.romajiInput.addEventListener('keydown', e => { if (e.key === 'Enter') checkTypeAnswer(); });
 el.btnNext.addEventListener('click', nextCard);
 
